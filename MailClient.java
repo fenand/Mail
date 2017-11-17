@@ -40,13 +40,14 @@ public class MailClient
     public void printNextMailItem()
     {
         MailItem item = server.getNextMailItem(user);
-        if((item.getMessage().contains("regalo") || item.getMessage().contains("viagra"))){
-            System.out.println("SPAM");
-            if(item == null) {
-                System.out.println("No new mail.");
+
+        if(item == null) {
+            System.out.println("No new mail.");
+            if((item.getMessage().contains("regalo") || item.getMessage().contains("viagra"))){
+                System.out.println("SPAM");
             }
-        }    
-        else if (item.getBoolean() == true) {
+            
+            else if (item.getBoolean() == true) {
             String message = "" + item.getMessage().replace("?\\", "a").replace("(\\", "e").replace(")\\", "i").replace("{\\", "o").replace("}\\", "u");
             boolean encryptedMessage = true;
             item = new MailItem(user, item.getTo(), item.getSubject(), message, encryptedMessage);
@@ -55,6 +56,7 @@ public class MailClient
         }
         else if (item.getBoolean() == false){
             item.print();
+        }
         }
     }
 
