@@ -1,4 +1,3 @@
-
 public class MailClient
 {
     // The server used for sending and receiving.
@@ -12,6 +11,16 @@ public class MailClient
     private boolean encrypted;
 
     private MailItem LastMail;
+    // Recoge el número de mensajes enviados.
+    private int mensajeEnviado;
+    // Recoge el número de mensajes recibidos.
+    private int mensajeRecibido;
+    // Recoge el mensaje.
+    private String mensaje;
+    // Recoge el número de caracteres del mensaje más largo.
+    private int numeroDeCaracteresDelMensajeMasLargo;
+    // Recoge el nombre del usuario con el mensaje más largo.
+    private String usuarioConMensajeMasLargo;
 
     /**
      * Create a mail client run by user and attached to the given server.
@@ -21,6 +30,7 @@ public class MailClient
         this.server = server;
 
         this.user = user;
+
     }
 
     /**
@@ -34,6 +44,18 @@ public class MailClient
 
             item = null;
         }
+        if(item != null) {
+            // Contabilizamos el número de mensajes recibidos.
+            mensajeRecibido += 1;
+            // Introducimos el mensaje que recibe un usuario.
+            mensaje = item.getMessage();
+            // Obtención del nombre de usuario con el mensaje más largo y
+            // el mensaje que tiene el mayor número de caracteres a través de este condicional.
+            if(numeroDeCaracteresDelMensajeMasLargo < mensaje.length()) {
+                numeroDeCaracteresDelMensajeMasLargo = mensaje.length();
+                usuarioConMensajeMasLargo = item.getFrom();
+            }
+        }
 
         return item;
     }
@@ -45,38 +67,28 @@ public class MailClient
 
     public void printNextMailItem()
     {
-
         MailItem item = server.getNextMailItem(user);
-
-        if((item.getMessage().contains("regalo") || item.getMessage().contains("viagra"))){
-
-            System.out.println("SPAM");
-
-            if(item == null){
-                System.out.println("No new mail.");
-            }
-
-            else if (item.getBoolean() == true){
-
-                String message = "" + item.getMessage().replace("?\\", "a").replace("(\\", "e").replace(")\\", "i").replace("{\\", "o").replace("}\\", "u");
-
-                boolean encryptedMessage = true;
-
-                item = new MailItem(user, item.getTo(), item.getSubject(), message, encryptedMessage);
-
-                server.post(item);
-
-                item.print();
-            }
-            else if (item.getBoolean() == false){
-
-                item.print();
-            }
+        if(item == null) {
+            System.out.println("No new mail.");
         }
-        else {
+        else if(item.getMessage().contains("regalo") || item.getMessage().contains("viagra")){
+            System.out.println("SPAM");
+        }
 
+        else{
             item.print();
         }
+        if(item.getBoolean() == true) {
+            String message = "" + item.getMessage().replace("?\\", "a").replace("(\\", "e").replace(")\\", "i").replace("{\\", "o").replace("}\\", "u");
+            boolean encryptedMessage = true;
+            item = new MailItem(user, item.getTo(), item.getSubject(), message, encryptedMessage);
+            server.post(item);
+            item.print();
+            if (item.getBoolean() == false){
+                item.print();
+            }
+        }
+
     }
 
     /**
@@ -88,7 +100,7 @@ public class MailClient
 
         if(item == null) {
 
-            System.out.println("Error.");
+            System.out.println("Error, no se ha recibido  ningún mensaje");
         }
         else {
 
@@ -137,27 +149,39 @@ public class MailClient
         // recibimos un email y lo guardamos
 
         MailItem correo = server.getNextMailItem(user);
-        
-        // Creamos un nuevo email en funcion del recibido
+
+        // Creamos un nuevo email en funcion del recibido y comprobamos que este encriptado o no
 
         if(correo ==null){
+            // da un mensaje por pantalla si no hay correos
             System.out.println("No new mail.");
         }
         else{
+            //crea una variable tipo string llamada re para devolver el asunto del correo que se recibe para reenviarlo
 
             String re = "Re: " + correo.getSubject();
 
+            // mira si el mensaje esta encriptado
+
             if (correo.getBoolean() == false){
+
+                // en el string gracias  guarda las gracias y el mensaje que has recibido para luego reenviarlo
                 String gracias = "Gracias por tu mensaje ya me ha llegado.\n " + "Tu Mensaje es: " +correo.getMessage();
+
+                //crea un nuevo mensaje o item y lo envia
 
                 MailItem correoQueQueremosEnviar = new MailItem(user,correo.getFrom(), re, gracias, correo.getBoolean());
 
                 server.post(correoQueQueremosEnviar);
             }
             else {
+                // aqui el menaje esta encriptado y se desencripta 
                 String gracias = "" + correo.getMessage().replace("?\\", "a").replace("(\\", "e").replace(")\\", "i").replace("{\\", "o").replace("}\\", "u");
+
+                // despues de guardar en gracias las instrucciones de desencriotado guardamos las gracias y el mensaje para reenviarlo
                 gracias = "Gracias por tu mensaje ya me ha llegado.\n " + "Tu Mensaje es: " + gracias;
 
+                // creamos el item nuevo y lo enviamos
                 MailItem correoQueQueremosEnviar = new MailItem(user,correo.getFrom(), re, gracias, correo.getBoolean());
 
                 server.post(correoQueQueremosEnviar); 
@@ -175,5 +199,19 @@ public class MailClient
         System.out.println("Tiene "+ server.howManyMailItems(user) +
 
             " nuevo(s) emails en su buzon de entrada");
+    }
+
+    /**
+     * Muestra por pantalla el número total de mensajes recibidos,
+     * el número total de mensajes enviados y la dirección de correo
+     * de la persona que envió el email más largo con el número de
+     * caracteres.
+     */
+    public void numeroMensajeYCorreoMasLargo() {
+        System.out.println("El número de mensajes enviados es " + mensajeEnviado);
+        System.out.println("El número de mensajes recibidos es " + mensajeRecibido);
+        if(mensajeRecibido > 0) {
+            System.out.println("El correo recibido con el mensaje más largo es de " + usuarioConMensajeMasLargo + " y tiene " + numeroDeCaracteresDelMensajeMasLargo + " caracteres");
+        }
     }
 }
