@@ -1,15 +1,12 @@
-/**
- * A class to model a simple email client. The client is run by a
- * particular user, and sends and retrieves mail via a particular server.
- * 
- * @author David J. Barnes and Michael Kölling
- * @version 2011.07.31
- */
+
 public class MailClient
 {
     // The server used for sending and receiving.
+
     private MailServer server;
+
     // The user running this client.
+
     private String user;
 
     private boolean encrypted;
@@ -22,6 +19,7 @@ public class MailClient
     public MailClient(MailServer server, String user)
     {
         this.server = server;
+
         this.user = user;
     }
 
@@ -30,33 +28,54 @@ public class MailClient
      */
     public MailItem getNextMailItem()
     {
-        return server.getNextMailItem(user);
+        MailItem item = server.getNextMailItem(user);
+
+        if((item.getMessage().contains("regalo") || item.getMessage().contains("viagra"))){
+
+            item = null;
+        }
+
+        return item;
     }
 
     /**
      * Print the next mail item (if any) for this user to the text 
      * terminal.
      */
+
     public void printNextMailItem()
     {
+
         MailItem item = server.getNextMailItem(user);
 
-        if(item == null) {
-            System.out.println("No new mail.");
-            if((item.getMessage().contains("regalo") || item.getMessage().contains("viagra"))){
-                System.out.println("SPAM");
+        if((item.getMessage().contains("regalo") || item.getMessage().contains("viagra"))){
+
+            System.out.println("SPAM");
+
+            if(item == null){
+                System.out.println("No new mail.");
             }
-            
-            else if (item.getBoolean() == true) {
-            String message = "" + item.getMessage().replace("?\\", "a").replace("(\\", "e").replace(")\\", "i").replace("{\\", "o").replace("}\\", "u");
-            boolean encryptedMessage = true;
-            item = new MailItem(user, item.getTo(), item.getSubject(), message, encryptedMessage);
-            server.post(item);
-            item.print();
+
+            else if (item.getBoolean() == true){
+
+                String message = "" + item.getMessage().replace("?\\", "a").replace("(\\", "e").replace(")\\", "i").replace("{\\", "o").replace("}\\", "u");
+
+                boolean encryptedMessage = true;
+
+                item = new MailItem(user, item.getTo(), item.getSubject(), message, encryptedMessage);
+
+                server.post(item);
+
+                item.print();
+            }
+            else if (item.getBoolean() == false){
+
+                item.print();
+            }
         }
-        else if (item.getBoolean() == false){
+        else {
+
             item.print();
-        }
         }
     }
 
@@ -66,10 +85,13 @@ public class MailClient
     public void printLastMail()
     {
         MailItem item = server.getNextMailItem(user);
+
         if(item == null) {
+
             System.out.println("Error.");
         }
         else {
+
             LastMail.print();
         }
     }
@@ -83,7 +105,9 @@ public class MailClient
     public void sendMailItem(String to, String subject, String message)
     {
         boolean encryptedMessage2 = false;
+
         MailItem item = new MailItem(user, to, subject, message, encryptedMessage2);
+
         server.post(item);
     }
 
@@ -96,24 +120,33 @@ public class MailClient
     public void sendEncryptedMailItem(String to, String subject, String message)
     {
         boolean encryptedMessage2 = true;
+
         String message2 = "?=?" + message.replace("a", "?\\").replace("e", "(\\").replace("i", ")\\").replace("o", "{\\").replace("u", "}\\");
+
         MailItem item = new MailItem(user, to, subject, message2, encryptedMessage2);
+
         server.post(item);
+
         encrypted = item.getBoolean();
     }
 
     public void descargaYReenvia()
     {    
         // recibimos un email y lo guardamos
+
         MailItem correo =  getNextMailItem();
+
         // Creamos un nuevo email en funcion del recibido
 
         if(correo ==null){
 
         }
         else{
+
             String re = "Re: " + correo.getSubject();
+
             String gracias = "Gracias por tu mensaje ya me ha llegado. " + correo.getMessage();
+
             MailItem correoQueQueremosEnviar = new MailItem(user,correo.getTo(),gracias,re,correo.getBoolean());
 
             server.post(correoQueQueremosEnviar);
@@ -128,6 +161,7 @@ public class MailClient
     public void numeroDeCorreos()
     {
         System.out.println("Tiene "+ server.howManyMailItems(user) +
+
             " nuevo(s) emails en su buzon de entrada");
     }
 }

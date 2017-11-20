@@ -15,6 +15,7 @@ public class MailItem
     private String message;
     // The text of the subject.
     private String subject;
+    
     private boolean encryptedMessage;
 
     /**
@@ -27,9 +28,13 @@ public class MailItem
     public MailItem(String from, String to, String subject, String message, boolean encryptedMessage)
     {
         this.from = from;
+        
         this.to = to;
+        
         this.subject = subject;
+        
         this.message = message;
+        
         this.encryptedMessage = encryptedMessage;
     }
 
@@ -79,8 +84,11 @@ public class MailItem
     public void print()
     {
         System.out.println("From: " + from);
+        
         System.out.println("To: " + to);
+        
         System.out.println("Subject: " + subject);
+        
         System.out.println("Message: " + message);
     }
 }
