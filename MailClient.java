@@ -25,15 +25,22 @@ public class MailClient
     /**
      * Create a mail client run by user and attached to the given server.
      */
-    public MailClient(MailServer server, String user)
+    public MailClient(MailServer server, String user )
+
     {
         this.server = server;
 
         this.user = user;
 
+        int mensajeEnviado = 0;
+
+        int mensajeRecibido = 0;
+
+        int numeroDeCaracteresDelMensajeMasLargo = 0;
+
     }
 
-    /**
+    /**  
      * Return the next mail item (if any) for this user.
      */
     public MailItem getNextMailItem()
@@ -49,10 +56,12 @@ public class MailClient
             mensajeRecibido += 1;
             // Introducimos el mensaje que recibe un usuario.
             mensaje = item.getMessage();
-            // Obtención del nombre de usuario con el mensaje más largo y
-            // el mensaje que tiene el mayor número de caracteres a través de este condicional.
+            // Obtención del mensaje que tiene el mayor número de caracteres.
             if(numeroDeCaracteresDelMensajeMasLargo < mensaje.length()) {
                 numeroDeCaracteresDelMensajeMasLargo = mensaje.length();
+            }
+            // Obtención del nombre de usuario con el mensaje más largo.
+            if(numeroDeCaracteresDelMensajeMasLargo >= 0) {
                 usuarioConMensajeMasLargo = item.getFrom();
             }
         }
@@ -69,7 +78,12 @@ public class MailClient
     {
         MailItem item = server.getNextMailItem(user);
         if(item == null) {
-            System.out.println("No new mail.");
+
+            
+            
+            System.out.println("No new mail.");   
+
+            
         }
         else if(item.getMessage().contains("regalo") || item.getMessage().contains("viagra")){
             System.out.println("SPAM");
@@ -77,6 +91,18 @@ public class MailClient
 
         else{
             item.print();
+            // Contabilizamos el número de mensajes recibidos.
+            mensajeRecibido += 1;
+            // Introducimos el mensaje que recibe un usuario.
+            mensaje = item.getMessage();
+            // Obtención del mensaje que tiene el mayor número de caracteres.
+            if(numeroDeCaracteresDelMensajeMasLargo < mensaje.length()) {
+                numeroDeCaracteresDelMensajeMasLargo = mensaje.length();
+            }
+            // Obtención del nombre de usuario con el mensaje más largo.
+            if(numeroDeCaracteresDelMensajeMasLargo >= 0) {
+                usuarioConMensajeMasLargo = item.getFrom();
+            }
         }
         if(item.getBoolean() == true) {
             String message = "" + item.getMessage().replace("?\\", "a").replace("(\\", "e").replace(")\\", "i").replace("{\\", "o").replace("}\\", "u");
