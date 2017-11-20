@@ -1,22 +1,12 @@
 
-/**
- * Write a description of class Test here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
 public class Test
 {
-    // instance variables - replace the example below with your own
-    private int x;
 
     /**
      * Constructor for objects of class Test
      */
     public Test()
     {
-        // initialise instance variables
-        x = 0;
     }
 
     /**
@@ -25,9 +15,11 @@ public class Test
      * @param  y   a sample parameter for a method
      * @return     the sum of x and y 
      */
-    public int sampleMethod(int y)
+    public void funcionalidad3()
     {
-        // put your code here
-        return x + y;
+        System.out.println("Se va a crear un server con nombre pollas");
+        MailServer server = new MailServer();
+        MailClient mailClie1 = new MailClient(server, "1");
+        MailClient mailClie2 = new MailClient(server, "2");
     }
 }

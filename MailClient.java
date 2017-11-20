@@ -121,7 +121,7 @@ public class MailClient
     {
         boolean encryptedMessage2 = true;
 
-        String message2 = "?=?" + message.replace("a", "?\\").replace("e", "(\\").replace("i", ")\\").replace("o", "{\\").replace("u", "}\\");
+        String message2 = "?=? " + message.replace("a", "?\\").replace("e", "(\\").replace("i", ")\\").replace("o", "{\\").replace("u", "}\\");
 
         MailItem item = new MailItem(user, to, subject, message2, encryptedMessage2);
 
@@ -132,24 +132,36 @@ public class MailClient
 
     public void descargaYReenvia()
     {    
+
+        // parte 03
         // recibimos un email y lo guardamos
 
-        MailItem correo =  getNextMailItem();
-
+        MailItem correo = server.getNextMailItem(user);
+        
         // Creamos un nuevo email en funcion del recibido
 
         if(correo ==null){
-
+            System.out.println("No new mail.");
         }
         else{
 
             String re = "Re: " + correo.getSubject();
 
-            String gracias = "Gracias por tu mensaje ya me ha llegado. " + correo.getMessage();
+            if (correo.getBoolean() == false){
+                String gracias = "Gracias por tu mensaje ya me ha llegado.\n " + "Tu Mensaje es: " +correo.getMessage();
 
-            MailItem correoQueQueremosEnviar = new MailItem(user,correo.getTo(),gracias,re,correo.getBoolean());
+                MailItem correoQueQueremosEnviar = new MailItem(user,correo.getFrom(), re, gracias, correo.getBoolean());
 
-            server.post(correoQueQueremosEnviar);
+                server.post(correoQueQueremosEnviar);
+            }
+            else {
+                String gracias = "" + correo.getMessage().replace("?\\", "a").replace("(\\", "e").replace(")\\", "i").replace("{\\", "o").replace("}\\", "u");
+                gracias = "Gracias por tu mensaje ya me ha llegado.\n " + "Tu Mensaje es: " + gracias;
+
+                MailItem correoQueQueremosEnviar = new MailItem(user,correo.getFrom(), re, gracias, correo.getBoolean());
+
+                server.post(correoQueQueremosEnviar); 
+            }
         }
     }   
 
