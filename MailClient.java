@@ -79,10 +79,8 @@ public class MailClient
         if(item == null) {
 
             
-            
             System.out.println("No new mail.");   
 
-            
         }
         else if(item.getMessage().contains("regalo") || item.getMessage().contains("viagra")){
             System.out.println("SPAM");
@@ -169,46 +167,33 @@ public class MailClient
 
     public void descargaYReenvia()
     {    
-
         // parte 03
         // recibimos un email y lo guardamos
-
         MailItem correo = server.getNextMailItem(user);
-
         // Creamos un nuevo email en funcion del recibido y comprobamos que este encriptado o no
-
         if(correo ==null){
             // da un mensaje por pantalla si no hay correos
             System.out.println("No new mail.");
         }
         else{
             //crea una variable tipo string llamada re para devolver el asunto del correo que se recibe para reenviarlo
-
             String re = "Re: " + correo.getSubject();
-
             // mira si el mensaje esta encriptado
 
             if (correo.getBoolean() == false){
-
                 // en el string gracias  guarda las gracias y el mensaje que has recibido para luego reenviarlo
                 String gracias = "Gracias por tu mensaje ya me ha llegado.\n " + "Tu Mensaje es: " +correo.getMessage();
-
                 //crea un nuevo mensaje o item y lo envia
-
                 MailItem correoQueQueremosEnviar = new MailItem(user,correo.getFrom(), re, gracias, correo.getBoolean());
-
                 server.post(correoQueQueremosEnviar);
             }
             else {
                 // aqui el menaje esta encriptado y se desencripta 
                 String gracias = "" + correo.getMessage().replace("?\\", "a").replace("(\\", "e").replace(")\\", "i").replace("{\\", "o").replace("}\\", "u");
-
-                // despues de guardar en gracias las instrucciones de desencriotado guardamos las gracias y el mensaje para reenviarlo
+                // despues de guardar en gracias las instrucciones de desencritado guardamos las gracias y el mensaje para reenviarlo
                 gracias = "Gracias por tu mensaje ya me ha llegado.\n " + "Tu Mensaje es: " + gracias;
-
                 // creamos el item nuevo y lo enviamos
                 MailItem correoQueQueremosEnviar = new MailItem(user,correo.getFrom(), re, gracias, correo.getBoolean());
-
                 server.post(correoQueQueremosEnviar); 
             }
         }
