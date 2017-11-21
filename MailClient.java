@@ -1,10 +1,11 @@
+
 public class MailClient
 {
     // The server used for sending and receiving.
 
     private MailServer server;
 
-    // The user running this client.
+    // The user runnring this client.
 
     private String user;
 
@@ -32,11 +33,11 @@ public class MailClient
 
         this.user = user;
 
-        int mensajeEnviado = 0;
+        mensajeEnviado = 0;
 
-        int mensajeRecibido = 0;
+        mensajeRecibido = 0;
 
-        int numeroDeCaracteresDelMensajeMasLargo = 0;
+        numeroDeCaracteresDelMensajeMasLargo = 0;
 
     }
 
@@ -57,11 +58,9 @@ public class MailClient
             // Introducimos el mensaje que recibe un usuario.
             mensaje = item.getMessage();
             // Obtención del mensaje que tiene el mayor número de caracteres.
-            if(numeroDeCaracteresDelMensajeMasLargo < mensaje.length()) {
-                numeroDeCaracteresDelMensajeMasLargo = mensaje.length();
-            }
             // Obtención del nombre de usuario con el mensaje más largo.
-            if(numeroDeCaracteresDelMensajeMasLargo >= 0) {
+            if(numeroDeCaracteresDelMensajeMasLargo <= mensaje.length()) {
+                numeroDeCaracteresDelMensajeMasLargo = mensaje.length();
                 usuarioConMensajeMasLargo = item.getFrom();
             }
         }
@@ -96,11 +95,9 @@ public class MailClient
             // Introducimos el mensaje que recibe un usuario.
             mensaje = item.getMessage();
             // Obtención del mensaje que tiene el mayor número de caracteres.
-            if(numeroDeCaracteresDelMensajeMasLargo < mensaje.length()) {
-                numeroDeCaracteresDelMensajeMasLargo = mensaje.length();
-            }
             // Obtención del nombre de usuario con el mensaje más largo.
-            if(numeroDeCaracteresDelMensajeMasLargo >= 0) {
+            if(numeroDeCaracteresDelMensajeMasLargo <= mensaje.length()) {
+                numeroDeCaracteresDelMensajeMasLargo = mensaje.length();
                 usuarioConMensajeMasLargo = item.getFrom();
             }
         }
@@ -147,6 +144,8 @@ public class MailClient
         MailItem item = new MailItem(user, to, subject, message, encryptedMessage2);
 
         server.post(item);
+        // Contabilizamos el número de mensajes enviados.
+        mensajeEnviado += 1;
     }
 
     /**
